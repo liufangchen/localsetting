@@ -12,19 +12,17 @@
 		<Description>LocalSetting is a lightweight localsetting tool based on file read and write.</Description>
 		<IsPackable>true</IsPackable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		
-
-<!--
-		<PackageProjectUrl>TODO</PackageProjectUrl>
--->
-		
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/liufangchen/localsetting</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/liufangchen/localsetting</RepositoryUrl>
+		<Tags>localsettings,usersetting,</Tags>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0-rc.2.23479.6" PrivateAssets="All"/>
 		<PackageReference Include="System.Text.Json" Version="8.0.0-rc.2.23479.6" PrivateAssets="All"/>
-		<None Include="..\..\README.md" Pack="true" PackagePath="" Visible="False"/>
-		<None Include="..\..\LICENSE.txt" Pack="true" PackagePath="" Visible="False"/>
+		<None Include="..\README.md" Pack="true" PackagePath="" Visible="False"/>
+		<None Include="..\LICENSE.txt" Pack="true" PackagePath="" Visible="False"/>
 	</ItemGroup>
 
 </Project>
