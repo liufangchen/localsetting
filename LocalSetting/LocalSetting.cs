@@ -3,41 +3,38 @@ using System.Text.Json;
 
 namespace LocalSettingService;
 
-public class LocalSetting(string appName = "LocalSettingApp", string settingsType = "UserSetting.json") : ILocalSetting
+public class LocalSetting : ILocalSetting
 {
-    private readonly string applicationName = appName;
-    private readonly string settingsType = settingsType;
+    private readonly string appName;
+    private readonly string settingsType;
     private readonly string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
+    private readonly Dictionary<string, object?> settings = [];
 
-    private string FilePath => Path.Combine(rootPath, applicationName, settingsType);
-    private string DirectoryPath => Path.Combine(rootPath, applicationName);
-
-    private Dictionary<string, object> settings = [];
-    private bool isInitialized;
-
-    private void Initialize()
+    public LocalSetting(string appName = "LocalSettingApp", string settingsType = "UserSetting.json")
     {
-        if (!isInitialized)
-        {
-            settings = File.Exists(FilePath) ? JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(FilePath)) ?? [] : [];
-            isInitialized = true;
-        }
+        this.appName = appName;
+        this.settingsType = settingsType;
+        if (!File.Exists(FilePath))
+            return;
+        var jsonStr = File.ReadAllText(FilePath);
+        settings = JsonSerializer.Deserialize<Dictionary<string, object?>>(jsonStr) ?? [];
     }
+
+    private string FilePath => Path.Combine(rootPath, appName, settingsType);
+    private string DirectoryPath => Path.Combine(rootPath, appName);
 
     public T? ReadSetting<T>(string key)
     {
-        Initialize();
         if (settings != null && settings.TryGetValue(key, out var obj))
         {
-            return JsonSerializer.Deserialize<T>((string)obj);
+            return (T?)obj;
         }
         return default;
     }
 
     public void SaveSetting<T>(string key, T value)
     {
-        Initialize();
-        settings[key] = JsonSerializer.Serialize(value);
+        settings[key] = value;
         // file storage
         if (!Directory.Exists(DirectoryPath))
         {
