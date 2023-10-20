@@ -6,35 +6,31 @@ namespace LocalSettingService;
 public class LocalSetting : ILocalSetting
 {
     private readonly string appName;
-    private readonly string settingsType;
+    private readonly string fileName;
     private readonly string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
-    private readonly Dictionary<string, object?> settings = [];
+    private readonly Dictionary<string, JsonElement> settings;
 
-    public LocalSetting(string appName = "LocalSettingApp", string settingsType = "UserSetting.json")
+    public LocalSetting(string appName = "LocalSettingApp", string fileName = "UserSetting.json")
     {
         this.appName = appName;
-        this.settingsType = settingsType;
-        if (!File.Exists(FilePath))
-            return;
-        var jsonStr = File.ReadAllText(FilePath);
-        settings = JsonSerializer.Deserialize<Dictionary<string, object?>>(jsonStr) ?? [];
+        this.fileName = fileName;
+        if (File.Exists(FilePath))
+        {
+            var jsonString = File.ReadAllText(FilePath);
+            settings = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString) ?? [];
+        }
+        else
+        {
+            settings = [];
+        }
     }
-
-    private string FilePath => Path.Combine(rootPath, appName, settingsType);
-    private string DirectoryPath => Path.Combine(rootPath, appName);
 
     public T? ReadSetting<T>(string key)
-    {
-        if (settings != null && settings.TryGetValue(key, out var obj))
-        {
-            return (T?)obj;
-        }
-        return default;
-    }
+        => (settings is not null && settings.TryGetValue(key, out JsonElement obj)) ? obj.Deserialize<T>() : default;
 
     public void SaveSetting<T>(string key, T value)
-    {
-        settings[key] = value;
+    {   
+        settings[key] = JsonSerializer.SerializeToElement(value);
         // file storage
         if (!Directory.Exists(DirectoryPath))
         {
@@ -43,4 +39,8 @@ public class LocalSetting : ILocalSetting
         var fileContent = JsonSerializer.Serialize(settings);
         File.WriteAllText(FilePath, fileContent, Encoding.UTF8);
     }
+
+    private string FilePath => Path.Combine(rootPath, appName, fileName);
+
+    private string DirectoryPath => Path.Combine(rootPath, appName);
 }

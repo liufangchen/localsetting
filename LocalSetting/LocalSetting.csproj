@@ -8,7 +8,7 @@
 
 		<Authors>Zuijiu Dangge</Authors>
 		<PackageId>LocalSetting</PackageId>
-		<PackageVersion>8.0.0-rc.2.23479.6</PackageVersion>
+		<PackageVersion>8.0.0-rc.2.23479.7</PackageVersion>
 		<Description>LocalSetting is a lightweight localsetting tool based on file read and write.</Description>
 		<IsPackable>true</IsPackable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
