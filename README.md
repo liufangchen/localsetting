@@ -36,9 +36,6 @@ Declare
 ~~~csharp 
 var settings = new LocalSetting(); 
 ~~~
-~~~csharp
-services.AddSingleton<ILocalSetting, LocalSetting>(); // DI
-~~~
 Save a Setting
 ~~~csharp 
 settings.SaveSetting("RepoUrl", "https://github.com/liufangchen/localsetting");
@@ -47,6 +44,11 @@ Read a Setting
 ~~~csharp
 var url = settings.ReadSetting<string>("RepoUrl");
 ~~~
+Dependency Injection
+~~~csharp
+services.AddSingleton<ILocalSetting, LocalSetting>();
+~~~
+
 
 ## Supported .NET SDK
 - .NET 6, 7, 8
