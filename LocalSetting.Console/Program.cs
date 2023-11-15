@@ -1,6 +1,7 @@
 ﻿using LocalSettingService;
+using System.Diagnostics;
 
-var settings = new LocalSetting("App1");
+var settings = new LocalSetting();
 settings.SaveSetting("RepoUrl", "https://github.com/liufangchen/localsetting");
 var url = settings.ReadSetting<string>("RepoUrl");
 Console.WriteLine(url);

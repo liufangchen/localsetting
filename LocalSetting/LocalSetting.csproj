@@ -8,7 +8,7 @@
 
 		<Authors>Zuijiu Dangge</Authors>
 		<PackageId>LocalSetting</PackageId>
-		<PackageVersion>8.0.0-rc.2.23479.6</PackageVersion>
+		<PackageVersion>8.0.0</PackageVersion>
 		<Description>LocalSetting is a lightweight localsetting tool based on file read and write.</Description>
 		<IsPackable>true</IsPackable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -19,10 +19,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0-rc.2.23479.6" PrivateAssets="All"/>
-		<PackageReference Include="System.Text.Json" Version="8.0.0-rc.2.23479.6" PrivateAssets="All"/>
-		<None Include="..\README.md" Pack="true" PackagePath="" Visible="False"/>
-		<None Include="..\LICENSE" Pack="true" PackagePath="" Visible="False"/>
+		<PackageReference Include="System.Text.Json" Version="8.0.0" PrivateAssets="All" />
+		<None Include="..\README.md" Pack="true" PackagePath="" Visible="False" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="" Visible="False" />
 	</ItemGroup>
 
 </Project>

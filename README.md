@@ -14,8 +14,9 @@ LocalSetting is a lightweight localsetting tool based on file read and write. Th
 ## 🏆 Features
 
 - Free of Configuration
+- No Third Dependency
 - Based on File System & JSON
-- Simple API
+- Simple API: Only Two Methods SaveSetting(key,T) & ReadSetting(key)
 - High Perfermance
 - DI Ready
 
@@ -31,7 +32,7 @@ dotnet add package LocalSetting
 
 ## 🔨 Use
 
-Declare With AppName
+Declare
 ~~~csharp 
 var settings = new LocalSetting(); 
 ~~~
@@ -45,7 +46,7 @@ var url = settings.ReadSetting<string>("RepoUrl");
 ~~~
 Dependency Injection
 ~~~csharp
-builder.Services.AddLocalSetting();
+services.AddSingleton<ILocalSetting, LocalSetting>();
 ~~~
 
 

@@ -1,43 +1,43 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 namespace LocalSettingService;
 
-public class LocalSetting(string appName = "LocalSettingApp", string settingsType = "UserSetting.json") : ILocalSetting
+public class LocalSetting : ILocalSetting
 {
-    private readonly string applicationName = appName;
-    private readonly string settingsType = settingsType;
+    private readonly string appName;
+    private readonly string fileName;
     private readonly string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
+    private readonly Dictionary<string, JsonElement> settings;
 
-    private string FilePath => Path.Combine(rootPath, applicationName, settingsType);
-    private string DirectoryPath => Path.Combine(rootPath, applicationName);
-
-    private Dictionary<string, object> settings = [];
-    private bool isInitialized;
-
-    private void Initialize()
+    public LocalSetting(string appName, string fileName)
     {
-        if (!isInitialized)
+        this.appName = appName;
+        this.fileName = fileName;
+        if (File.Exists(FilePath))
         {
-            settings = File.Exists(FilePath) ? JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(FilePath)) ?? [] : [];
-            isInitialized = true;
+            var jsonString = File.ReadAllText(FilePath);
+            settings = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonString) ?? [];
+        }
+        else
+        {
+            settings = [];
         }
     }
+
+    public LocalSetting(string appName) : this(appName, "UserSetting.json")
+    { }
+
+    public LocalSetting() : this(Process.GetCurrentProcess().ProcessName)
+    { }
 
     public T? ReadSetting<T>(string key)
-    {
-        Initialize();
-        if (settings != null && settings.TryGetValue(key, out var obj))
-        {
-            return JsonSerializer.Deserialize<T>((string)obj);
-        }
-        return default;
-    }
+        => (settings is not null && settings.TryGetValue(key, out JsonElement obj)) ? obj.Deserialize<T>() : default;
 
     public void SaveSetting<T>(string key, T value)
-    {
-        Initialize();
-        settings[key] = JsonSerializer.Serialize(value);
+    {   
+        settings[key] = JsonSerializer.SerializeToElement(value);
         // file storage
         if (!Directory.Exists(DirectoryPath))
         {
@@ -46,4 +46,8 @@ public class LocalSetting(string appName = "LocalSettingApp", string settingsTyp
         var fileContent = JsonSerializer.Serialize(settings);
         File.WriteAllText(FilePath, fileContent, Encoding.UTF8);
     }
+
+    private string FilePath => Path.Combine(rootPath, appName, fileName);
+
+    private string DirectoryPath => Path.Combine(rootPath, appName);
 }
