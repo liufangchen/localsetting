@@ -32,7 +32,6 @@ public class LocalSetting : ILocalSetting
     public LocalSetting() : this(Process.GetCurrentProcess().ProcessName)
     { }
 
-
     public T? ReadSetting<T>(string key)
         => (settings is not null && settings.TryGetValue(key, out JsonElement obj)) ? obj.Deserialize<T>() : default;
 
