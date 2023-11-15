@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 namespace LocalSettingService;
@@ -10,7 +11,7 @@ public class LocalSetting : ILocalSetting
     private readonly string rootPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
     private readonly Dictionary<string, JsonElement> settings;
 
-    public LocalSetting(string appName = "LocalSettingApp", string fileName = "UserSetting.json")
+    public LocalSetting(string appName, string fileName)
     {
         this.appName = appName;
         this.fileName = fileName;
@@ -24,6 +25,13 @@ public class LocalSetting : ILocalSetting
             settings = [];
         }
     }
+
+    public LocalSetting(string appName) : this(appName, "UserSetting.json")
+    { }
+
+    public LocalSetting() : this(Process.GetCurrentProcess().ProcessName)
+    { }
+
 
     public T? ReadSetting<T>(string key)
         => (settings is not null && settings.TryGetValue(key, out JsonElement obj)) ? obj.Deserialize<T>() : default;
